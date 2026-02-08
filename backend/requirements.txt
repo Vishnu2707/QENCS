@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pennylane
+pandas
+torch
+mne
+scikit-learn
+python-multipart
