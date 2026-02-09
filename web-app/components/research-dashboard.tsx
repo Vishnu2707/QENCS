@@ -90,9 +90,9 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
             // Grounded in EEG_data.csv ranges (Delta ~300k, Alpha ~30k, Beta ~45k)
             return {
                 time: t.toFixed(2),
-                'Battlefield': (Math.sin(t * 1.8) * 5000 + 45000 + (t > 2.2 && t < 3.8 ? 15000 : 0) + Math.random() * 5000).toFixed(0),
-                'Python': (Math.cos(t * 1.2) * 4000 + 33000 + (t > 3.8 && t < 5.8 ? 25000 : 0) + Math.random() * 4000).toFixed(0),
-                'Internal': (Math.sin(t * 2.5) * 6000 + 22000 + (t > 4 ? 8000 : 0) + Math.random() * 6000).toFixed(0)
+                'Battlefield': Math.round(Math.sin(t * 1.8) * 5000 + 45000 + (t > 2.2 && t < 3.8 ? 15000 : 0) + Math.random() * 5000),
+                'Python': Math.round(Math.cos(t * 1.2) * 4000 + 33000 + (t > 3.8 && t < 5.8 ? 25000 : 0) + Math.random() * 4000),
+                'Internal': Math.round(Math.sin(t * 2.5) * 6000 + 22000 + (t > 4 ? 8000 : 0) + Math.random() * 6000)
             };
         });
     }, []);
@@ -329,7 +329,7 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                 </Card>
 
                 {/* Strategy Performance Matrix */}
-                <Card className="bg-white border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                <Card className="bg-white border-slate-200 shadow-sm overflow-hidden flex flex-col h-[450px]">
                     <CardHeader className="border-b border-slate-50 bg-slate-50/30">
                         <CardTitle className="text-xs font-black uppercase text-slate-400 flex items-center gap-2 tracking-widest text-center justify-center">
                             <ListChecks className="w-4 h-4 text-emerald-500" /> Performance of Different Strategies (n=6)
@@ -344,7 +344,7 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                                         <ResponsiveContainer width="100%" height="100%">
                                             <LineChart data={subject.data}>
                                                 <XAxis dataKey="n" hide />
-                                                <YAxis domain={[0.6, 0.9]} hide />
+                                                <YAxis domain={['auto', 'auto']} hide />
                                                 <Line type="step" dataKey="s_rs" stroke="#3b82f6" strokeWidth={1.5} dot={false} />
                                                 <Line type="monotone" dataKey="s_h" stroke="#ef4444" strokeWidth={1.5} dot={false} />
                                                 <Line type="monotone" dataKey="s_hr" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
