@@ -11,7 +11,10 @@ Build Settings:
 Environment Variables:
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `NEXT_PUBLIC_BACKEND_URL` | `https://qencs-backend.onrender.com` | The base URL of your hosted FastAPI backend. |
+| `NEXT_PUBLIC_API_URL` | `https://qencs-backend.onrender.com` | The base URL of your hosted FastAPI backend (e.g., on Render). |
+
+> [!TIP]
+> **Build Command Hint**: If Vercel fails to install dependencies due to React 19/React 18 peer conflicts (common with `@react-three/fiber`), change the **Install Command** to `npm install --legacy-peer-deps`.
 
 ---
 
