@@ -37,6 +37,11 @@ export default function Home() {
   const [toastMessage, setToastMessage] = useState("");
   const [wasCalibrating, setWasCalibrating] = useState(true);
   const [focusTime, setFocusTime] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Tracking focus time (mocked accumulation)
   useEffect(() => {
@@ -214,23 +219,29 @@ export default function Home() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="h-full pt-0">
-                  <ResponsiveContainer width="100%" height="80%">
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        innerRadius={50}
-                        outerRadius={70}
-                        paddingAngle={5}
-                        dataKey="value"
-                        animationDuration={500}
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {hasMounted ? (
+                    <div className="h-[200px] w-full">
+                      <ResponsiveContainer width="100%" height="100%" minHeight={200}>
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            innerRadius={50}
+                            outerRadius={70}
+                            paddingAngle={5}
+                            dataKey="value"
+                            animationDuration={500}
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <RechartsTooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="h-[200px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
+                  )}
                   <div className="flex justify-center gap-4 -mt-4 text-[10px] font-bold">
                     {pieData.map(item => (
                       <div key={item.name} className="flex items-center gap-1">
@@ -250,14 +261,20 @@ export default function Home() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="h-full pt-0 flex flex-col justify-center">
-                  <ResponsiveContainer width="100%" height="70%">
-                    <BarChart data={confidenceData}>
-                      <XAxis dataKey="name" hide />
-                      <YAxis domain={[0, 100]} hide />
-                      <Bar dataKey="value" fill="#6366f1" radius={[8, 8, 8, 8]} barSize={40} />
-                      <ReferenceLine y={50} stroke="#e2e8f0" strokeDasharray="3 3" />
-                    </BarChart>
-                  </ResponsiveContainer>
+                  {hasMounted ? (
+                    <div className="h-[180px] w-full">
+                      <ResponsiveContainer width="100%" height="100%" minHeight={180}>
+                        <BarChart data={confidenceData}>
+                          <XAxis dataKey="name" hide />
+                          <YAxis domain={[0, 100]} hide />
+                          <Bar dataKey="value" fill="#6366f1" radius={[8, 8, 8, 8]} barSize={40} />
+                          <ReferenceLine y={50} stroke="#e2e8f0" strokeDasharray="3 3" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  ) : (
+                    <div className="h-[180px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
+                  )}
                   <div className="text-center mt-2">
                     <span className="text-2xl font-black text-slate-800">{Math.round(confidence * 100)}%</span>
                     <p className="text-[10px] text-slate-400 font-bold uppercase">Decision Score</p>

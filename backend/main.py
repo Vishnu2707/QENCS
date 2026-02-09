@@ -20,11 +20,21 @@ app = FastAPI()
 # CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000", 
+        "http://localhost:3001", 
+        "http://localhost:3002", 
+        "http://localhost:3003",
+        "https://qencs.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+def read_root():
+    return {"status": "online", "system": "QENCS Quantum Backend"}
 
 logic_agent = LogicAgent()
 

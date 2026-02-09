@@ -66,9 +66,9 @@ export function EEGChart({ baselineValue }: EEGChartProps) {
                     <span className="flex items-center gap-1 text-emerald-600"><div className="w-2 h-2 bg-emerald-600 rounded-full" /> Beta</span>
                 </div>
             </CardHeader>
-            <CardContent className="h-[350px] w-full pt-4 min-w-0">
-                <div style={{ width: '100%', height: '100%' }}>
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+            <CardContent className="h-[320px] w-full pt-4 min-w-0">
+                <div className="h-[300px] w-full">
+                    <ResponsiveContainer width="100%" height="100%" minHeight={300}>
                         <LineChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#cbd5e1" opacity={0.5} vertical={false} />
                             <XAxis
