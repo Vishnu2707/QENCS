@@ -15,26 +15,9 @@ import {
 } from 'recharts'
 import { Button } from '@/components/ui/button'
 
-// 3D Point Component for Hilbert Mapping
-function QuantumPoint({ position, color }: { position: [number, number, number], color: string }) {
-    return (
-        <mesh position={position}>
-            <sphereGeometry args={[0.05, 16, 16]} />
-            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} />
-        </mesh>
-    )
-}
 
 // 3D Scene for Hilbert Space Visualization
 function HilbertSpace({ coords }: { coords: { x: number, y: number, z: number } }) {
-    // We'll store a history of points for the "Trace"
-    const points = useMemo(() => {
-        return Array.from({ length: 20 }, () => ({
-            pos: [Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5] as [number, number, number],
-            color: '#3b82f6'
-        }))
-    }, [])
-
     return (
         <>
             <ambientLight intensity={0.5} />
