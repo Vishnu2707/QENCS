@@ -252,6 +252,24 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                 </div>
             </div>
 
+            {/* Research Metrics Bar */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                    { label: 'F1 Correlation', value: '0.892', change: '+4.2%', color: 'blue' },
+                    { label: 'p-Value', value: '0.0034', change: 'σ=2.9', color: 'emerald' },
+                    { label: 'Entanglement', value: '1.42 bit', change: 'MAX', color: 'purple' },
+                    { label: 'Circuit Fidelity', value: '96.8%', change: '99.1% BC', color: 'rose' }
+                ].map(stat => (
+                    <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-blue-500 transition-colors">{stat.label}</p>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</span>
+                            <span className={`text-[10px] font-bold text-${stat.color}-500`}>{stat.change}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {/* Middle Section: Longitudinal Analysis (Figure 1 Replacement) */}
             <Card className="bg-white border-slate-200 shadow-sm overflow-hidden">
                 <CardHeader className="py-4 border-b border-slate-200 bg-white">
@@ -340,7 +358,7 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                             {strategyData.map(subject => (
                                 <div key={subject.id} className="border border-slate-100 rounded-lg p-2 flex flex-col bg-slate-50/30">
                                     <p className="text-[9px] font-black text-slate-500 mb-2 uppercase">{subject.name}</p>
-                                    <div className="flex-1 min-h-[100px]">
+                                    <div className="h-[120px] w-full">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <LineChart data={subject.data}>
                                                 <XAxis dataKey="n" hide />
@@ -367,23 +385,6 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
 
             </div>
 
-            {/* Footer Metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[
-                    { label: 'F1 Correlation', value: '0.892', change: '+4.2%', color: 'blue' },
-                    { label: 'p-Value', value: '0.0034', change: 'σ=2.9', color: 'emerald' },
-                    { label: 'Entanglement', value: '1.42 bit', change: 'MAX', color: 'purple' },
-                    { label: 'Circuit Fidelity', value: '96.8%', change: '99.1% BC', color: 'rose' }
-                ].map(stat => (
-                    <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-blue-500 transition-colors">{stat.label}</p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</span>
-                            <span className={`text-[10px] font-bold text-${stat.color}-500`}>{stat.change}</span>
-                        </div>
-                    </div>
-                ))}
-            </div>
 
         </div>
     )
