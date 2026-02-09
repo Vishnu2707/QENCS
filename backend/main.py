@@ -25,7 +25,8 @@ app.add_middleware(
         "http://localhost:3001", 
         "http://localhost:3002", 
         "http://localhost:3003",
-        "https://qencs.vercel.app"
+        "https://qencs.vercel.app",
+        "https://qencs-ihmm1sz8e-vishnu-ajiths-projects.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
