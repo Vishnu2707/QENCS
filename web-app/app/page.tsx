@@ -204,9 +204,11 @@ export default function Home() {
 
             {/* Top Data Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="space-y-6 lg:col-span-1">
-                <FocusIndicator score={currentFocus} isCalibrating={isCalibrating} />
-                <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-white shadow-lg relative overflow-hidden h-[180px]">
+              <div className="flex flex-col gap-6 lg:col-span-1">
+                <div className="flex-1">
+                  <FocusIndicator score={currentFocus} isCalibrating={isCalibrating} />
+                </div>
+                <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-white shadow-lg relative overflow-hidden flex flex-col justify-center min-h-[160px]">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-purple-700 flex items-center gap-2 text-sm uppercase tracking-widest">
                       <Zap className="w-4 h-4" />
@@ -221,24 +223,24 @@ export default function Home() {
                 </Card>
               </div>
 
-              <div className="space-y-6 lg:col-span-2">
+              <div className="lg:col-span-2 h-full">
                 <EEGChart baselineValue={baselineValue} />
               </div>
             </div>
 
             {/* Neural Analytics Grid (Phase 3) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 auto-rows-fr">
               {/* Card 1: Spectral Distribution */}
-              <Card className="bg-white border-blue-50 shadow-sm overflow-hidden h-[300px]">
+              <Card className="bg-white border-blue-50 shadow-sm overflow-hidden flex flex-col">
                 <CardHeader className="pb-0">
                   <CardTitle className="text-xs font-bold uppercase text-slate-400 tracking-tighter flex items-center gap-2">
                     <PieChartIcon className="w-3 h-3" /> Spectral Distribution
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="h-full pt-0">
+                <CardContent className="flex-1 flex flex-col justify-center pt-0 min-h-[220px]">
                   {hasMounted ? (
-                    <div className="h-[200px] w-full">
-                      <ResponsiveContainer width="100%" height="100%" minHeight={200}>
+                    <div className="h-[180px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
                             data={pieData}
@@ -257,9 +259,9 @@ export default function Home() {
                       </ResponsiveContainer>
                     </div>
                   ) : (
-                    <div className="h-[200px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
+                    <div className="h-[180px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
                   )}
-                  <div className="flex justify-center gap-4 -mt-4 text-[10px] font-bold">
+                  <div className="flex justify-center gap-4 text-[10px] font-bold">
                     {pieData.map(item => (
                       <div key={item.name} className="flex items-center gap-1">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
@@ -271,16 +273,16 @@ export default function Home() {
               </Card>
 
               {/* Card 2: Quantum Decision Space */}
-              <Card className="bg-white border-blue-50 shadow-sm h-[300px]">
+              <Card className="bg-white border-blue-50 shadow-sm flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-xs font-bold uppercase text-slate-400 tracking-tighter flex items-center gap-2">
                     <Target className="w-3 h-3" /> Quantum Certainty
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="h-full pt-0 flex flex-col justify-center">
+                <CardContent className="flex-1 flex flex-col justify-center pt-0 min-h-[220px]">
                   {hasMounted ? (
-                    <div className="h-[180px] w-full">
-                      <ResponsiveContainer width="100%" height="100%" minHeight={180}>
+                    <div className="h-[140px] w-full">
+                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={confidenceData}>
                           <XAxis dataKey="name" hide />
                           <YAxis domain={[0, 100]} hide />
@@ -290,23 +292,23 @@ export default function Home() {
                       </ResponsiveContainer>
                     </div>
                   ) : (
-                    <div className="h-[180px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
+                    <div className="h-[140px] w-full flex items-center justify-center bg-slate-50/50 animate-pulse rounded-lg" />
                   )}
-                  <div className="text-center mt-2">
+                  <div className="text-center mt-4">
                     <span className="text-2xl font-black text-slate-800">{Math.round(confidence * 100)}%</span>
                     <p className="text-[10px] text-slate-400 font-bold uppercase">Decision Score</p>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Card 3: Session Summary */}
-              <Card className="bg-white border-blue-50 shadow-sm h-[300px]">
+              {/* Card 3: Session Intelligence */}
+              <Card className="bg-white border-blue-50 shadow-sm flex flex-col">
                 <CardHeader>
                   <CardTitle className="text-xs font-bold uppercase text-slate-400 tracking-tighter">
                     Session Intelligence
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="flex-1 flex flex-col justify-around min-h-[220px]">
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <Clock className="w-4 h-4 text-blue-600" />
