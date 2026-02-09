@@ -63,8 +63,12 @@ export function useEEGData() {
                     gamma2: Math.random(),
                     sensitivity: sensitivity
                 };
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                if (status === 'connecting') {
+                    console.log("Current API URL:", apiUrl);
+                }
 
-                const res = await fetch('http://localhost:8000/analyze', {
+                const res = await fetch(`${apiUrl}/analyze`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(mockInput)
