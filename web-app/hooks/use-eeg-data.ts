@@ -15,6 +15,11 @@ interface EEGMetrics {
     };
     confidence: number;
     interventions: number;
+    research?: {
+        hilbert: { x: number; y: number; z: number };
+        vqc_loss: number;
+        svm_loss: number;
+    };
 }
 
 interface LogicAnalysis {
@@ -44,6 +49,10 @@ export function useEEGData() {
     const [bandPower, setBandPower] = useState({ theta: 33, alpha: 33, beta: 34 });
     const [confidence, setConfidence] = useState(0);
     const [interventions, setInterventions] = useState(0);
+
+    // Research Metrics
+    const [hilbertCoords, setHilbertCoords] = useState({ x: 0, y: 0, z: 0 });
+    const [lossHistory, setLossHistory] = useState<{ vqc: number; svm: number }[]>([]);
 
     // Settings
     const [sensitivity, setSensitivity] = useState(0.15); // Default 15%
@@ -90,6 +99,14 @@ export function useEEGData() {
                 setConfidence(data.metrics.confidence);
                 setInterventions(data.metrics.interventions);
 
+                if (data.metrics.research) {
+                    setHilbertCoords(data.metrics.research.hilbert);
+                    setLossHistory(prev => {
+                        const next = [...prev, { vqc: data.metrics.research!.vqc_loss, svm: data.metrics.research!.svm_loss }];
+                        return next.slice(-30); // Keep last 30 for convergence chart
+                    });
+                }
+
                 setCurrentFocus(1 - data.metrics.lapse_probability);
                 setStatus("active");
 
@@ -109,6 +126,7 @@ export function useEEGData() {
         currentFocus, advice, lapseProb, status,
         isCalibrating, baselineValue,
         entropy, bandPower, confidence, interventions,
+        hilbertCoords, lossHistory,
         sensitivity, setSensitivity
     };
 }

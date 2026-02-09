@@ -6,12 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Brain, Zap, Clock, BarChart3, Settings,
   CheckCircle, PieChart as PieChartIcon,
-  Target, AlertTriangle, ShieldCheck, TrendingUp
+  Target, AlertTriangle, ShieldCheck, TrendingUp, FlaskConical
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useEEGData } from "@/hooks/use-eeg-data";
 import { motion, AnimatePresence } from "framer-motion";
+import { ResearchDashboard } from "@/components/research-dashboard";
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
@@ -26,10 +27,11 @@ const subjects = [
 
 export default function Home() {
   const [activeSubject, setActiveSubject] = useState("S001");
-  const [activeTab, setActiveTab] = useState<"dashboard" | "settings">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "settings" | "research">("dashboard");
   const {
     currentFocus, advice, lapseProb, status, isCalibrating, baselineValue,
     entropy, bandPower, confidence, interventions,
+    hilbertCoords, lossHistory,
     sensitivity, setSensitivity
   } = useEEGData();
 
@@ -130,6 +132,16 @@ export default function Home() {
             >
               <Settings className="w-4 h-4" />
               <span>Settings</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("research")}
+              className={cn(
+                "w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left",
+                activeTab === "research" ? "bg-slate-900 text-white shadow-md" : "text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              <FlaskConical className="w-4 h-4 text-blue-500" />
+              <span>Research Analytics</span>
             </button>
           </nav>
 
@@ -315,6 +327,8 @@ export default function Home() {
               </Card>
             </div>
           </>
+        ) : activeTab === "research" ? (
+          <ResearchDashboard hilbertCoords={hilbertCoords} lossHistory={lossHistory} />
         ) : (
           <div className="max-w-2xl mx-auto py-10">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
