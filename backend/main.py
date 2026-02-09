@@ -243,6 +243,11 @@ def analyze_focus(data: EEGData):
         "analysis": analysis
     }
 
+@app.get("/research/logs")
+def get_research_logs():
+    # Return the last 30 records for the log viewer
+    return {"logs": session.research_records[-30:] if session.research_records else []}
+
 @app.get("/research/export")
 def export_research_bundle():
     # Generate research ZIP in memory
