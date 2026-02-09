@@ -1,4 +1,4 @@
-# QENCS: Quantum-Enhanced Neuro-Coaching System 🧠⚛️
+# QENCS: Quantum-Enhanced Neuro-Coaching System 🧠
 
 > **The intersection of ADHD Support and Quantum Machine Learning.**
 
