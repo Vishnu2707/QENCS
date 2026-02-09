@@ -418,14 +418,25 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                                 </h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Real-time Hybrid Quantum-Neural Telemetry</p>
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setIsLogsOpen(false)}
-                                className="rounded-full h-8 w-8 p-0"
-                            >
-                                ✕
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={fetchLogs}
+                                    disabled={isLoadingLogs}
+                                    className="rounded-full h-8 text-[10px] font-bold px-3 border-slate-200"
+                                >
+                                    {isLoadingLogs ? "Refreshing..." : "Refresh Logs"}
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setIsLogsOpen(false)}
+                                    className="rounded-full h-8 w-8 p-0"
+                                >
+                                    ✕
+                                </Button>
+                            </div>
                         </div>
                         <div className="flex-1 overflow-auto p-6 bg-slate-950 font-mono text-[11px]">
                             {isLoadingLogs ? (
@@ -438,14 +449,18 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                                                 <span className="text-emerald-500">[{new Date().toLocaleTimeString()}]</span>
                                                 <span className="text-blue-400">#FRAME_{i}</span>
                                             </div>
-                                            <pre className="text-slate-300 leading-relaxed">
+                                            <pre className="text-slate-300 leading-relaxed whitespace-pre-wrap">
                                                 {JSON.stringify(log, null, 2)}
                                             </pre>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="text-slate-500">No telemetry data captured in current session buffer.</div>
+                                <div className="text-slate-500 flex flex-col items-center justify-center h-full gap-2">
+                                    <div className="w-8 h-8 rounded-full border border-slate-800 flex items-center justify-center">!</div>
+                                    <span>No telemetry data captured in current session buffer.</span>
+                                    <p className="text-[10px] text-slate-700">Ensure the EEG stream is active in the main dashboard.</p>
+                                </div>
                             )}
                         </div>
                         <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-end gap-3">

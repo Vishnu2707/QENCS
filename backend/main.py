@@ -106,7 +106,11 @@ class SessionState:
         self.MAX_BASELINE_SAMPLES = 15
         self.interventions_count = 0
         # Research Session Data
-        self.research_records = []
+        self.research_records = [{
+            "status": "SYSTEM_INITIALIZED",
+            "message": "Quantum-Neural Node Active. Telemetry buffer standby.",
+            "timestamp": "BOOT_LOG_001"
+        }]
         self.vqc_losses = []
         self.svm_losses = []
 
