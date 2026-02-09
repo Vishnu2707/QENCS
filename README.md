@@ -6,7 +6,7 @@ QENCS is a cutting-edge, clinical-grade neuro-coaching platform designed to dete
 
 ---
 
-## 🚀 Executive Summary
+## Executive Summary
 
 QENCS bridges the gap between quantum-mechanical neural modeling and practical ADHD coaching. By utilizing a **4-layer Quantum Neural Network**, the system identifies subtle "Focus Signatures" in noisy brainwave data that standard AI often misses. It provides users with personalized, real-time coaching advice based on their own neural baseline.
 
@@ -21,9 +21,9 @@ Standard AI models (Classical ML) often fail to track ADHD focus states accurate
 
 ---
 
-## 🌌 The Solution: The Quantum Advantage
+## The Solution: The Quantum Advantage
 
-### 📻 The 'Radio Station' Analogy
+### The 'Radio Station' Analogy
 Imagine Classical AI is like a radio tuned to one station at a time. It can hear the melody, but it misses the harmony. **QENCS Quantum ML** is like hearing the **whole symphony**. 
 
 By mapping brainwaves into a high-dimensional **Hilbert Space**, our model doesn't just look at how loud one signal is; it uses **Quantum Entanglement** to see how all the wave bands "dance" together in real-time.
@@ -40,7 +40,7 @@ Imagine your brain is a crowded room with 100 people talking. Classical AI tries
 
 ---
 
-## 🏗️ Architecture Walkthrough
+## Architecture Walkthrough
 
 ### The Journey of a Brainwave
 ```mermaid
@@ -61,7 +61,7 @@ Our model uses **9 Qubits** and **4 Strongly Entangling Layers**.
 
 ---
 
-## 📊 Visual Dashboard Guide
+## Visual Dashboard Guide
 
 | Component | What it Represents | User Benefit |
 | :--- | :--- | :--- |
@@ -101,7 +101,7 @@ To swap the 'Live Stream Simulator' for a real EEG device (Muse/OpenBCI):
 
 ---
 
-## 🌟 Project Impact
+## Project Impact
 
 QENCS isn't just a dashboard; it's a **Neuro-Feedback Lab**. 
 - **Personalization**: Every user starts with a 30-second calibration.
