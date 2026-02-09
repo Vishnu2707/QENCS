@@ -9,10 +9,15 @@ import {
   Target, AlertTriangle, ShieldCheck, TrendingUp, FlaskConical
 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { cn } from "@/lib/utils";
 import { useEEGData } from "@/hooks/use-eeg-data";
 import { motion, AnimatePresence } from "framer-motion";
-import { ResearchDashboard } from "@/components/research-dashboard";
+
+const ResearchDashboard = dynamic(
+  () => import("@/components/research-dashboard").then((mod) => mod.ResearchDashboard),
+  { ssr: false }
+);
 import {
   PieChart, Pie, Cell, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
