@@ -1,3 +1,8 @@
+// DEMO MODE: Sends synthetic random EEG values to the backend on every poll.
+// The quantum VQC and Logic Agent run on real code — only the input signal is synthetic.
+// For real hardware: replace the mockInput block below with an LSL inlet that
+// streams samples from your EEG device (Muse, OpenBCI, etc.).
+// See docs/deployment_guide.md for LSL integration steps.
 
 import { useState, useEffect } from "react";
 

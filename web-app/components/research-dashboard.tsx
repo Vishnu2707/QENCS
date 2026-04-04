@@ -67,13 +67,48 @@ interface ResearchDashboardProps {
     lossHistory: { vqc: number, svm: number }[]
 }
 
+interface TrainingMetrics {
+    vqc: { accuracy: number; f1_score: number; precision: number; recall: number } | null
+    svm: { accuracy: number; f1_score: number; precision: number; recall: number } | null
+    loaded: boolean
+}
+
 export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashboardProps) {
     const [hasMounted, setHasMounted] = useState(false)
     const [isLogsOpen, setIsLogsOpen] = useState(false)
     const [logs, setLogs] = useState<any[]>([])
     const [isLoadingLogs, setIsLoadingLogs] = useState(false)
+    const [trainingMetrics, setTrainingMetrics] = useState<TrainingMetrics>({
+        vqc: null, svm: null, loaded: false
+    })
 
-    useEffect(() => setHasMounted(true), [])
+    useEffect(() => {
+        setHasMounted(true)
+        // Fetch real training metrics from backend
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        fetch(`${apiUrl}/research/training_results`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data && data.vqc_results && data.svm_results) {
+                    setTrainingMetrics({
+                        vqc: {
+                            accuracy:  data.vqc_results.final_test_accuracy,
+                            f1_score:  data.vqc_results.f1_score,
+                            precision: data.vqc_results.precision,
+                            recall:    data.vqc_results.recall,
+                        },
+                        svm: {
+                            accuracy:  data.svm_results.accuracy,
+                            f1_score:  data.svm_results.f1_score,
+                            precision: data.svm_results.precision,
+                            recall:    data.svm_results.recall,
+                        },
+                        loaded: true
+                    })
+                }
+            })
+            .catch(() => { /* backend offline — metrics remain null */ })
+    }, [])
 
     // MOCK DATA for sophisticated charts
     const publicationData = useMemo(() => {
@@ -273,23 +308,40 @@ export function ResearchDashboard({ hilbertCoords, lossHistory }: ResearchDashbo
                 </div>
             </div>
 
-            {/* Research Metrics Bar */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {[
-                    { label: 'F1 Correlation', value: '0.892', change: '+4.2%', color: 'blue' },
-                    { label: 'p-Value', value: '0.0034', change: 'σ=2.9', color: 'emerald' },
-                    { label: 'Entanglement', value: '1.42 bit', change: 'MAX', color: 'purple' },
-                    { label: 'Circuit Fidelity', value: '96.8%', change: '99.1% BC', color: 'rose' }
-                ].map(stat => (
-                    <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-blue-500 transition-colors">{stat.label}</p>
-                        <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</span>
-                            <span className={`text-[10px] font-bold text-${stat.color}-500`}>{stat.change}</span>
-                        </div>
+            {/* Research Metrics Bar — sourced from /research/training_results */}
+            {!trainingMetrics.loaded ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
+                    <p className="text-xs font-black text-amber-700 uppercase tracking-widest mb-1">
+                        Benchmark Metrics Pending
+                    </p>
+                    <p className="text-[11px] text-amber-600">
+                        Run <code className="bg-amber-100 px-1 rounded">scripts/quantum_model.py</code> to
+                        generate real VQC vs SVM numbers. No metrics are displayed until training completes.
+                    </p>
+                </div>
+            ) : (
+                <div className="space-y-3">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        Benchmark Results — from training_results.json
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        {[
+                            { label: 'VQC Accuracy',  value: trainingMetrics.vqc?.accuracy.toFixed(4)  ?? '—', sub: 'Quantum VQC',    color: 'blue' },
+                            { label: 'VQC F1 Score',  value: trainingMetrics.vqc?.f1_score.toFixed(4)  ?? '—', sub: 'Quantum VQC',    color: 'blue' },
+                            { label: 'SVM Accuracy',  value: trainingMetrics.svm?.accuracy.toFixed(4)  ?? '—', sub: 'Classical SVM',  color: 'slate' },
+                            { label: 'SVM F1 Score',  value: trainingMetrics.svm?.f1_score.toFixed(4)  ?? '—', sub: 'Classical SVM',  color: 'slate' },
+                        ].map(stat => (
+                            <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 group-hover:text-blue-500 transition-colors">{stat.label}</p>
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-2xl font-black text-slate-800 tracking-tight">{stat.value}</span>
+                                    <span className={`text-[10px] font-bold text-${stat.color}-400`}>{stat.sub}</span>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </div>
+            )}
 
             {/* Middle Section: Longitudinal Analysis (Figure 1 Replacement) */}
             <Card className="bg-white border-slate-200 shadow-sm overflow-hidden">

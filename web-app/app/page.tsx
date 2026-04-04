@@ -172,7 +172,13 @@ export default function Home() {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-blue-50 bg-white/50">
+        <div className="p-4 border-t border-blue-50 bg-white/50 space-y-2">
+          {/* DEMO MODE badge — remove when connected to real EEG hardware */}
+          <div className="px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-center">
+            <span className="text-[10px] font-black text-amber-700 uppercase tracking-widest">
+              ⚠ Demo Mode — Synthetic Data
+            </span>
+          </div>
           <div className="p-3 rounded-lg flex items-center space-x-3 border border-blue-100 bg-white shadow-sm">
             <div className={`w-2.5 h-2.5 rounded-full ${status === 'active' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500'}`} />
             <div className="flex flex-col">

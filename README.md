@@ -1,113 +1,213 @@
-# QENCS: Quantum-Enhanced Neuro-Coaching System 🧠
+# QENCS: Quantum-Enhanced Neuro-Coaching System
 
-> **The intersection of ADHD Support and Quantum Machine Learning.**
+## What This Actually Is
 
-QENCS is a cutting-edge, clinical-grade neuro-coaching platform designed to detect and intervention in ADHD-related focus lapses using real-time EEG data and Variational Quantum Classifiers (VQC).
-
----
-
-## Executive Summary
-
-QENCS bridges the gap between quantum-mechanical neural modeling and practical ADHD coaching. By utilizing a **4-layer Quantum Neural Network**, the system identifies subtle "Focus Signatures" in noisy brainwave data that standard AI often misses. It provides users with personalized, real-time coaching advice based on their own neural baseline.
-
----
-
-## 📉 The Problem: The 'Noisy' ADHD Brain
-
-Standard AI models (Classical ML) often fail to track ADHD focus states accurately because:
-1.  **High Noise**: EEG data is naturally erratic, and ADHD brainwaves are even "noisier."
-2.  **Linear Limitations**: Traditional algorithms look for flat patterns, but human focus is a complex, non-linear dance between several frequency bands (Theta, Alpha, Beta).
-3.  **One-Size-Fits-All**: Most systems use fixed thresholds, ignoring the unique neural baseline of the individual.
+QENCS is a quantum machine learning research experiment that applies a
+Variational Quantum Classifier (VQC) to EEG band-power data to predict
+cognitive focus lapses. It is a software prototype built on a classical
+quantum circuit simulator (PennyLane `default.qubit`) connected to a FastAPI
+backend and a Next.js dashboard. It is not a clinical product, has not been
+validated on real-time EEG hardware, and the current model does not meaningfully
+outperform a random baseline — as the training results below show honestly.
 
 ---
 
-## The Solution: The Quantum Advantage
+## Architecture (Verified from Code)
 
-### The 'Radio Station' Analogy
-Imagine Classical AI is like a radio tuned to one station at a time. It can hear the melody, but it misses the harmony. **QENCS Quantum ML** is like hearing the **whole symphony**. 
+### Quantum Circuit
 
-By mapping brainwaves into a high-dimensional **Hilbert Space**, our model doesn't just look at how loud one signal is; it uses **Quantum Entanglement** to see how all the wave bands "dance" together in real-time.
+| Parameter | Value |
+|---|---|
+| Qubits | 9 |
+| Layers | 4 (`StronglyEntanglingLayers`) |
+| Weight tensor shape | `(4, 9, 3)` — 108 trainable parameters |
+| Embedding | `AngleEmbedding` mapping features → `[0, π]` |
+| Measurement | `expval(PauliZ)` on each of 9 qubits |
+| Output | `Linear(9, 1)` + `Sigmoid` |
+| Simulator | PennyLane `default.qubit` (classical CPU simulation) |
 
-### 👥 The 'Crowded Room' Analogy
-Imagine your brain is a crowded room with 100 people talking. Classical AI tries to listen to one person at a time (e.g., just the Beta waves). **QENCS uses Quantum Entanglement** to listen to the **rhythm of the whole room**. This allows us to detect exactly when you start to lose focus, even before you realize it yourself.
+### Input Features (9 total)
 
-### ⚖️ Comparison: Classical vs. QENCS Quantum
-| Feature | Classical AI (Old) | QENCS Quantum (New) |
-| :--- | :--- | :--- |
-| **Perspective** | Sees brainwaves as a flat 2D line. | Sees brainwaves in a massive 3D "Hilbert Space." |
-| **Pattern Matching** | Looks for "High" or "Low" signals. | Uses **Entanglement** to see how all signals dance together. |
-| **Speed/Precision** | Can get confused by "noisy" brain data. | Sifts through noise to find the "Focus Signature" instantly. |
+Pre-computed EEG band powers read directly from CSV:
 
----
-
-## Architecture Walkthrough
-
-### The Journey of a Brainwave
-```mermaid
-graph TD
-    A[Raw EEG Data] -->|Normalization| B(MNE-Python Preprocessing)
-    B -->|θ/β Ratio| C{Quantum Inference}
-    C -->|4-Layer VQC| D[Lapse Probability]
-    D -->|30s Buffer| E(Personal Baseline)
-    E -->|Dynamic Threshold| F{Logic Agent}
-    F -->|Advice| G[Next.js Dashboard]
-    F -->|Intervention| H[Coaching Toast]
+```
+Delta, Theta, Alpha1, Alpha2, Beta1, Beta2, Gamma1, Gamma2
 ```
 
-### The 4-Layer Quantum Circuit
-Our model uses **9 Qubits** and **4 Strongly Entangling Layers**. 
-- **Entanglement**: Links features together in the quantum state.
-- **Non-Linearity**: Rotations (Angle Embedding) create complex decision boundaries mapping brain states to $[0, \pi]$.
+Plus one engineered feature:
+
+```
+FocusRatio = Theta / (Beta1 + Beta2)
+```
+
+All 9 features are scaled to `[0, π]` via `MinMaxScaler` fitted on the
+training split only and saved to `data/feature_scaler.pkl`.
+
+### Preprocessing Pipeline
+
+```
+EEG_data.csv
+  → scripts/data_processing.py   (compute FocusRatio, drop NaN/inf)
+  → data/processed_eeg.csv       (raw band-power values, no normalization)
+  → scripts/quantum_model.py     (MinMaxScaler [0,π] fit on train split only)
+  → data/feature_scaler.pkl      (saved; loaded by backend at inference)
+  → data/quantum_focus_model_v2.pth
+```
+
+### Training Configuration
+
+| Setting | Value |
+|---|---|
+| Epochs | 50 |
+| Batch size | 32 (mini-batch via DataLoader) |
+| Optimizer | Adam |
+| Learning rate | 0.01 |
+| Loss | `BCEWithLogitsLoss(pos_weight=2.0)` |
+| Train/test split | 80/20 |
+| Dataset subset | 2,000 samples (1,000 per class, stratified) |
+| Full dataset size | 12,811 samples |
+
+**Note on subset:** Full-dataset training (12,811 samples × 50 epochs on
+`default.qubit`) requires ~89 minutes on CPU. The 2,000-sample stratified
+subset reduces this to ~2 minutes. Adjust `SUBSET_PER_CLASS` in
+`scripts/quantum_model.py` to train on more data.
 
 ---
 
-## Visual Dashboard Guide
+## Real Performance Results
 
-| Component | What it Represents | User Benefit |
-| :--- | :--- | :--- |
-| **Focus Gauge** | Your current "Flow State" (0-100%). | Instant feedback on mental engagement. |
-| **EEG Monitor** | Real-time Theta, Alpha, and Beta waves. | Visualize your brain's spectral signature. |
-| **Spectral Pie** | Real-time ratio of wave distribution. | See if your 'Task Engagement' (Beta) is dipping. |
-| **Certainty Bar** | Quantum Model conviction score. | Know how "sure" the AI is about your state. |
-| **Baseline Marker** | Your personalized neural reference point. | Compare current focus to your "normal" state. |
+Numbers pulled directly from `data/training_results.json` — generated by
+running `scripts/quantum_model.py`.
+
+| Metric | VQC (9-qubit, 4-layer) | SVM (RBF, C=1.0) |
+|---|---|---|
+| Accuracy | 0.5500 | 0.5350 |
+| Precision | 0.5482 | 0.5860 |
+| Recall | 0.9908 | 0.5000 |
+| F1 Score | 0.7059 | 0.5396 |
+| Train time | 112.3 s | 0.23 s |
+
+**Interpretation:** Both models perform near random chance (50% baseline for
+balanced classes). The VQC's high recall / low precision indicates it is
+predicting class 1 (lapse) for nearly every sample rather than learning a
+meaningful boundary. The loss curve shows minimal decrease over 50 epochs
+(train loss 0.9734 → 0.9424), confirming the model has not converged. The SVM
+shows similar near-random behaviour. Neither model is suitable for real-world
+deployment in this state.
 
 ---
 
-## 🛠️ Installation & Developer Guide
+## Known Limitations
 
-### Prerequisites
-- Python 3.9+
-- Node.js 18+
-- PennyLane, PyTorch, FastAPI
+- **Model does not converge with current settings.** 50 epochs at lr=0.01
+  with Adam produces near-random predictions. Quantum Natural Gradient (QNG)
+  or a lower learning rate with more epochs is likely required.
+- **Training on a subset.** 2,000 of 12,811 available samples were used due
+  to CPU simulation cost. Full-dataset training has not been completed.
+- **Fixed threshold, not subject-specific.** The Logic Agent uses a single
+  `theta_beta_threshold = 2.0` and a `sensitivity` offset. There is no
+  per-subject trained model or adaptive calibration beyond the 15-sample
+  baseline buffer.
+- **Classical simulator only.** `default.qubit` simulates quantum circuits
+  on CPU. There is no hardware quantum advantage here.
+- **LSL hardware integration is scaffolded, not implemented.** The frontend
+  hook (`hooks/use-eeg-data.ts`) sends randomly generated `Math.random()`
+  values to the backend. `pylsl` is not installed. Real EEG hardware
+  integration requires the LSL steps described in `docs/deployment_guide.md`.
+- **MNE-Python is not used.** `mne` was removed from `requirements.txt`. The
+  dataset already provides pre-computed band-power columns; raw EEG
+  time-series filtering is not part of this pipeline.
+- **Dataset source.** `EEG_data.csv` contains pre-computed band powers with
+  `predefinedlabel` (0 = no lapse, 1 = lapse). `demographic_info.csv` shows
+  subjects aged 24–25, Han Chinese, male. The model has not been validated
+  across diverse populations.
 
-### 1. Backend Setup
+---
+
+## Tech Stack (Exact Versions)
+
+### Backend (Python 3.11)
+
+| Package | Version |
+|---|---|
+| fastapi | 0.128.5 |
+| uvicorn | 0.40.0 |
+| pennylane | 0.43.1 |
+| torch | 2.9.0 |
+| scikit-learn | 1.5.1 |
+| pandas | 2.2.2 |
+| numpy | 2.0.1 |
+| python-multipart | (unpinned) |
+
+### Frontend (Node.js)
+
+| Package | Version |
+|---|---|
+| next | 15.1.9 |
+| react | 19.0.0 |
+| @react-three/fiber | 9.0.0-rc.0 |
+| @react-three/drei | 10.0.0 |
+| three | 0.173.0 |
+| recharts | 3.0.0-beta.0 |
+| framer-motion | ^11.18.2 |
+| katex | ^0.16.28 |
+| tailwindcss | ^3.4.1 |
+| typescript | ^5 |
+
+---
+
+## What's Next
+
+- **Proper convergence investigation.** Switch from Adam to Quantum Natural
+  Gradient (QNG), reduce learning rate to ~0.001, train on the full 12,811
+  samples, and run a hyperparameter sweep over circuit depth and learning rate.
+- **Real LSL hardware integration.** Install `pylsl`, replace the `mockInput`
+  block in `hooks/use-eeg-data.ts` with an LSL `StreamInlet`, and validate
+  the 2-second polling window against actual device sampling rates
+  (Muse: 256 Hz, OpenBCI: 250 Hz).
+- **Proper quantum advantage benchmarking.** Run the same features through
+  classical MLP, Random Forest, and XGBoost baselines on identical splits
+  before claiming any quantum advantage. The current SVM comparison is a
+  weak baseline.
+
+---
+
+## Running Locally
+
+### 1. Generate the model and scaler
+
+```bash
+# Regenerate processed_eeg.csv from raw data
+python3 scripts/data_processing.py
+
+# Train VQC (50 epochs, ~2 min), fit scaler, run SVM benchmark, save results
+# Output: data/quantum_focus_model_v2.pth, data/feature_scaler.pkl,
+#         data/training_results.json
+python3 scripts/quantum_model.py
+```
+
+### 2. Backend
+
 ```bash
 cd backend
 pip install -r requirements.txt
 python3 main.py
+# Server at http://localhost:8000
 ```
 
-### 2. Frontend Setup
+### 3. Frontend
+
 ```bash
 cd web-app
 npm install
 npm run dev
+# Dashboard at http://localhost:3000
 ```
 
-### 📡 Real Hardware Integration
-To swap the 'Live Stream Simulator' for a real EEG device (Muse/OpenBCI):
-1. Use **Lab Streaming Layer (LSL)** to broadcast your device's data.
-2. Update the `LSL Inlet` in `backend/main.py` to listen for the stream.
+### Environment Variables
 
----
+| Variable | Default | Description |
+|---|---|---|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | FastAPI backend URL |
 
-## Project Impact
-
-QENCS isn't just a dashboard; it's a **Neuro-Feedback Lab**. 
-- **Personalization**: Every user starts with a 30-second calibration.
-- **Sensitivity**: Users can toggle coach intervention frequency (10%, 15%, 20%).
-- **Clinical Relevance**: Tracks **Focus Entropy** and **Quantum Confidence**, providing deep insights for ADHD coaching.
-
----
-
-*"Harnessing the power of the subatomic to support the power of the mind."*
+For Vercel + Render deployment see [docs/deployment_guide.md](docs/deployment_guide.md).

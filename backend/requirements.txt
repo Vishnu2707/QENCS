@@ -1,8 +1,12 @@
-fastapi
-uvicorn
-pennylane
-pandas
-torch
-mne
-scikit-learn
+fastapi==0.128.5
+uvicorn==0.40.0
+pennylane==0.43.1
+pandas==2.2.2
+torch==2.9.0
+scikit-learn==1.5.1
+numpy==2.0.1
 python-multipart
+# mne removed: not installed in this environment and the dataset (EEG_data.csv)
+# already provides pre-computed band-power columns (Delta, Theta, Alpha1/2,
+# Beta1/2, Gamma1/2). Raw time-series bandpass filtering via mne.filter is
+# therefore not applicable to this pipeline.
